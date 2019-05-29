@@ -170,7 +170,7 @@ exports.build = async ({ files, entrypoint, config, workPath, meta }) => {
   };
 
   const lambda = await createLambda({
-    files: { ...preparedFiles, ...launcherFiles },
+    files: { ...userFiles, ...launcherFiles },
     handler: 'launcher.launcher',
     runtime: 'nodejs8.10',
   });
