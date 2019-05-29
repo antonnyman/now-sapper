@@ -119,6 +119,8 @@ exports.build = async ({ files, entrypoint, config, workPath, meta }) => {
   //   [`require("./${entrypoint}");`].join(' ')
   // );
   const basePath = path.dirname(entrypoint);
+  const userFiles = rename(preparedFiles, name => path.join('user', name));
+  // const userPath = path.join(workPath, 'user');
 
   const launcherFiles = {
     'launcher.js': new FileBlob({
