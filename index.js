@@ -1,6 +1,6 @@
-const { createLambda } = require('@now/build-utils/lambda.js') // eslint-disable-line import/no-extraneous-dependencies
-const path = require('path')
-const rename = require('@now/build-utils/fs/rename.js') // eslint-disable-line import/no-extraneous-dependencies
+const { createLambda } = require('@now/build-utils/lambda.js'); // eslint-disable-line import/no-extraneous-dependencies
+const path = require('path');
+const rename = require('@now/build-utils/fs/rename.js'); // eslint-disable-line import/no-extraneous-dependencies
 
 const FileBlob = require('@now/build-utils/file-blob.js');
 const FileFsRef = require('@now/build-utils/file-fs-ref.js');
@@ -11,29 +11,30 @@ function spawnAsync(command, args, cwd) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { stdio: 'inherit', cwd });
     child.on('error', reject);
-    child.on('close', (code, signal) => (code !== 0
-      ? reject(new Error(`Exited with ${code || signal}`))
-      : resolve()));
+    child.on('close', (code, signal) =>
+      code !== 0
+        ? reject(new Error(`Exited with ${code || signal}`))
+        : resolve()
+    );
   });
 }
 
 exports.config = {
-  maxLambdaSize: '10mb'
-}
+  maxLambdaSize: '10mb',
+};
 
 exports.build = async ({ files, entrypoint, workPath }) => {
   // move all user code to 'user' subdirectory
-  const basePath = path.dirname(entrypoint)
-  const userFiles = rename(files, name => path.join('user', name))
+  const basePath = path.dirname(entrypoint);
+  const userFiles = rename(files, name => path.join('user', name));
   const userPath = path.join(workPath, 'user');
-  
-  //await spawnAsync('npm', ['install', '--only=prod'], userPath);
+
+  await spawnAsync('npm', ['install', '--only=prod'], userPath);
 
   // Get launcher
   const launcherFiles = {
     'launcher.js': new FileBlob({
-      data:
-        `
+      data: `
 const { Server } = require('http');
 const { Bridge } = require('./bridge.js');
 const fs = require('fs');
@@ -74,16 +75,16 @@ const server = new Server(listener);
 server.listen(bridge.port);
 
 exports.launcher = bridge.launcher;
-`
+`,
     }),
-    'bridge.js': new FileFsRef({ fsPath: require('@now/node-bridge') })
-  }
+    'bridge.js': new FileFsRef({ fsPath: require('@now/node-bridge') }),
+  };
 
   const lambda = await createLambda({
     files: { ...userFiles, ...launcherFiles },
     handler: 'launcher.launcher',
-    runtime: 'nodejs8.10'
-  })
+    runtime: 'nodejs8.10',
+  });
 
-  return { [entrypoint]: lambda }
-}
+  return { [entrypoint]: lambda };
+};
