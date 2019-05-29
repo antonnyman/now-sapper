@@ -118,6 +118,7 @@ exports.build = async ({ files, entrypoint, config, workPath, meta }) => {
   //   '// PLACEHOLDER',
   //   [`require("./${entrypoint}");`].join(' ')
   // );
+  const basePath = path.dirname(entrypoint);
 
   const launcherFiles = {
     'launcher.js': new FileBlob({
