@@ -5,6 +5,8 @@ const FileFsRef = require('@now/build-utils/file-fs-ref.js'); // eslint-disable-
 const fs = require('fs-extra');
 const glob = require('@now/build-utils/fs/glob.js'); // eslint-disable-line import/no-extraneous-dependencies
 const path = require('path');
+const rename = require('@now/build-utils/fs/rename.js'); // eslint-disable-line import/no-extraneous-dependencies
+
 const {
   runNpmInstall,
   runPackageJsonScript,
