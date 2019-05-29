@@ -112,12 +112,12 @@ exports.build = async ({ files, entrypoint, config, workPath, meta }) => {
     );
   }
 
-  const launcherPath = path.join(__dirname, 'launcher.js');
-  let launcherData = await fs.readFile(launcherPath, 'utf8');
-  launcherData = launcherData.replace(
-    '// PLACEHOLDER',
-    [`require("./${entrypoint}");`].join(' ')
-  );
+  // const launcherPath = path.join(__dirname, 'launcher.js');
+  // let launcherData = await fs.readFile(launcherPath, 'utf8');
+  // launcherData = launcherData.replace(
+  //   '// PLACEHOLDER',
+  //   [`require("./${entrypoint}");`].join(' ')
+  // );
 
   const launcherFiles = {
     'launcher.js': new FileBlob({
